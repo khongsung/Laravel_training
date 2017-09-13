@@ -3,45 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\user\createUserRequest;
+use App\Http\Requests\user\CreateUserRequest;
+use App\User;
 
 class UserController extends Controller
 {
-    public function index() {
-    	$title = "This is title";
-    	$name = "Khong van sung";
-    	$object = [
-    		'html', 'css', 'php'
-    	];
+    /*public function __construct()
+    {
+        $this->middleware('auth');
+    }*/
 
-    	return view('user.index')->with('title', $title)
-    	->with('name', $name)
-    	->with('object', $object);
+    public function index()
+    {
+        $data = User::paginate(5);
+    	return view('admin.user.index')->with(compact('data'));
     }
 
-    public function create() {
-    	$users = [
-    		[
-    			'name' => 'sung',
-    			'gmail' => 'sung@gmail.com'
-    		],
-
-    		[
-    			'name' => 'Vinh',
-    			'gmail' => 'vinh@gmail.com'
-    		],
-    	];
-
-    	$post = 'title is: Don\'t make this mistake your watermelon (msn.com)';
-
-    	return view('user.create')->with(compact('users', 'post'));
+    public function store(CreateUserRequest $request) 
+    {  
+        /*dd($request->all());*/
+        $user = $request->all();
+        User::create($user);
+        return redirect()->route('user.index');
     }
 
-    public function store(createUserRequest $request) {
-        return $request->all();
+    public function create() 
+    {
+    	return view('admin.user.create');
     }
 
-    public function edit($id) {
-    	return view('user.edit')->with(compact('id'));
+    public function show() 
+    {
+        
+    }
+
+    public function update(Request $request, $id) 
+    {
+        /*dd($requests->all());*/
+        $user = User::find($id);
+        $user_update = $request->all();
+        $user->update($user_update);
+        return redirect()->route('user.index');
+    }
+
+    public function destroy($id) 
+    {
+        User::destroy($id);
+        return redirect()->route('user.index');
+    }
+
+    public function edit($id) 
+    {
+        $data = User::find($id);
+    	return view('admin.user.edit')->with(compact('data'));
     }
 }

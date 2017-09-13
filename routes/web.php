@@ -12,33 +12,33 @@
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('welcome');
 });
 
-Route::get('/test', function() {
-	return 'OK';
-})->name('user.test');
-
-Route::get('/post/{id}', function($id) {
-	return 'Post has id ' . $id;
-});
-
-Route::get('/post/{id}/{name}', function($id, $name) {
-	return 'Post has id ' . $id . ' and name: ' . $name;
-});
-
-Route::group(['prefix' => 'admin'], function() {
-
-	Route::get('user', function() {
-		return 'User';
-	});
-
-	Route::get('post', function() {
-		return 'Post';
-	});
-});
 
 // get, post, push, destroy, resource, group
 
 
-Route::resource('user', 'Usercontroller'); //chuẩn restfull
+Auth::routes();
+
+Route::group(['middleware' => 'auth'], function() {
+	Route::get('/home', 'UserController@index')->name('home');
+
+	Route::resource('user', 'Usercontroller'); //chuẩn restfull
+
+	Route::resource('category', 'CategoryController');
+
+	Route::resource('post', 'PostController');
+});
+
+
+Route::group(['prefix' => 'admin'], function() {
+	Route::get('login', 'VerifyController@getLogin')->name('admin.verify.getlogin');
+
+	Route::post('login', 'VerifyController@postLogin')->name('admin.verify.postlogin');
+
+	Route::group(['middleware' => 'checkuser'], function() {
+		Route::resource('product', 'ProductController');
+	});
+});
+

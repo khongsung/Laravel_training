@@ -18,7 +18,27 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
+        'password' => $password ?: $password = bcrypt('123456'),
+       	'address' => 'Hà Nội',
+       	'phone' => mt_rand(1, 1000000000),
         'remember_token' => str_random(10),
+    ];
+});
+
+$factory->define(App\Post::class, function (Faker\Generator $faker) {
+	
+    return [
+        'title' => $faker->name,
+        'description' => $faker->word,
+        'content' => $faker->paragraph,
+        'status_id' => mt_rand(1, 2),
+    ];
+});
+
+$factory->define(App\Category::class, function (Faker\Generator $faker) {
+    
+    return [
+        'name' => $faker->name,
+        'status_id' => mt_rand(1, 2),
     ];
 });
